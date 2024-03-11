@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+.turbo/
+node_modules/
+dist/
+.eslintcache
+.DS_Store
+yarn.lock
+package-lock.json
+pnpm-lock.yaml

@@ -1,0 +1,7 @@
+{
+  "name": "chalk",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "version": "5.2.0",
+  "license": "MIT"
+}
