@@ -1,28 +1,25 @@
 {
   "name": "@waycode/cli",
-  "description": "一个插件化的Cli交互式命令行工具,具体功能需要通过插件实现",
   "version": "0.0.0",
+  "description": "一个插件化的Cli交互式命令行工具,具体功能需要通过插件实现",
   "publishConfig": {
     "access": "public"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "cli": "./bin/cli"
   },
   "files": [
     "bin",
-    "dist",
-    "compiled"
+    "compiled",
+    "dist"
   ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup-node src/index.ts --format cjs --dts",
     "dev": "pnpm run build --watch",
     "prepublishOnly": "pnpm run build",
     "cli": "DEBUG=true node ./bin/cli"
-  },
-  "devDependencies": {
-    "@types/fs-extra": "^11.0.1"
   },
   "dependencies": {
     "@clack/prompts": "^0.6.3",
@@ -32,5 +29,8 @@
     "conf": "^10",
     "execa": "file:./compiled/execa",
     "fs-extra": "^11.1.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1"
   }
 }
