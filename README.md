@@ -9,6 +9,18 @@
 
 上述功能均可通过 `ctx` 对象调用。
 
+## 内置命令
+
+- `cli --version` 查看版本
+- `cli --help` 查看帮助
+- `cli install` 安装插件
+- `cli unstall` 卸载插件
+- `cli enable` 开启插件
+- `cli disable` 关闭插件
+- `cli link` 本地调试插件
+- `cli unlink` 关闭本地调试插件
+- `cli updates` 批量更新插件
+
 ## 如何开发插件？
 
 ```ts
