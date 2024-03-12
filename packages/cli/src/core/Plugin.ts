@@ -15,13 +15,13 @@ export class Plugin {
   private $$: Execa$;
 
   public constructor(private ctx: CliContext) {
-    this.pluginDirPath = join(this.ctx.meta.paths.home, '.yi/plugins');
+    this.pluginDirPath = join(this.ctx.meta.paths.home, '.cli/plugins');
     ctx.fs.ensureDirSync(this.pluginDirPath);
     this.$$ = this.ctx.$({
       cwd: this.pluginDirPath,
       stdio: 'inherit',
     });
-    if (!ctx.fs.existsSync(join(this.ctx.meta.paths.home, '.yi/plugins/package.json')))
+    if (!ctx.fs.existsSync(join(this.ctx.meta.paths.home, '.cli/plugins/package.json')))
       this.$$`npm init -y`;
   }
 
@@ -212,7 +212,7 @@ export class Plugin {
     }
     this.plugins.set(name, plugin);
     if (plugin.config) {
-      const conf = new Conf({ schema: plugin.config, projectName: `@yi/${name}` });
+      const conf = new Conf({ schema: plugin.config, projectName: `@cli/${name}` });
       this.ctx.log.debug(`${name} configPath: ${conf.path}`);
       this.ctx.store.set(name, conf);
     }

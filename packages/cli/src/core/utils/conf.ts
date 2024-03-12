@@ -1,7 +1,7 @@
 import Conf from 'conf';
 
 export const globalConf = new Conf({
-  projectName: '@yi/core',
+  projectName: '@cli/core',
   schema: {
     plugins: {
       type: 'object',
