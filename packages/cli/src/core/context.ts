@@ -81,27 +81,4 @@ export class Context implements CliContext {
       return command;
     }
   };
-
-  public checkLogin = () => {
-    const userInfo = this.getUserInfo();
-    return !!userInfo?.auth;
-  };
-
-  public getUserInfo = () => {
-    const config = (this.store.get('ldap') || {}) as Conf;
-    if (config) {
-      return config.get('userInfo') as {
-        name: string;
-        password: string;
-        nameMd5: string;
-        auth: string;
-      };
-    }
-    return {
-      name: '',
-      password: '',
-      nameMd5: '',
-      auth: '',
-    };
-  };
 }

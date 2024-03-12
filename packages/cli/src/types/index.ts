@@ -51,13 +51,6 @@ export interface CliContext {
     json: typeof json;
     commandExists: (command: string) => boolean;
   };
-  checkLogin: () => boolean;
-  getUserInfo: () => {
-    name: string;
-    password: string;
-    nameMd5: string;
-    auth: string;
-  };
 }
 
 export interface CliInstance {
