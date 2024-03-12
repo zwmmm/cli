@@ -1,9 +1,10 @@
-import type { CliInstance } from "@/types/index";
-import { Command } from "commander";
-import { EventEmitter } from "events";
-import { description, version } from "../../package.json";
-import { Plugin } from "./Plugin";
-import { Context } from "./context";
+import { EventEmitter } from 'node:events';
+import process from 'node:process';
+import { Command } from 'commander';
+import { description, version } from '../../package.json';
+import { Plugin } from './Plugin';
+import { Context } from './context';
+import type { CliInstance } from '@/types/index';
 
 export class Cli extends EventEmitter implements CliInstance {
   public command = new Command();

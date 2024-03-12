@@ -1,9 +1,9 @@
-import type { CliContext } from "@/types/index";
-import Conf from "conf";
-import type { Execa$ } from "execa";
-import { join } from "path";
-import { globalConf } from "./../core/utils/conf";
-import type { CliPlugin } from "./../types/index";
+import { join } from 'node:path';
+import Conf from 'conf';
+import type { Execa$ } from 'execa';
+import { globalConf } from './../core/utils/conf';
+import type { CliPlugin } from './../types/index';
+import type { CliContext } from '@/types/index';
 
 interface PluginList {
   [key: string]: boolean | string;
@@ -15,15 +15,14 @@ export class Plugin {
   private $$: Execa$;
 
   public constructor(private ctx: CliContext) {
-    this.pluginDirPath = join(this.ctx.meta.paths.home, ".yi/plugins");
+    this.pluginDirPath = join(this.ctx.meta.paths.home, '.yi/plugins');
     ctx.fs.ensureDirSync(this.pluginDirPath);
     this.$$ = this.ctx.$({
       cwd: this.pluginDirPath,
-      stdio: "inherit",
+      stdio: 'inherit',
     });
-    if (!ctx.fs.existsSync(join(this.ctx.meta.paths.home, ".yi/plugins/package.json"))) {
+    if (!ctx.fs.existsSync(join(this.ctx.meta.paths.home, '.yi/plugins/package.json')))
       this.$$`npm init -y`;
-    }
   }
 
   public init() {
@@ -33,59 +32,61 @@ export class Plugin {
   }
 
   public getNpmPkgName(name: string) {
-    const names = name.split("@");
+    const names = name.split('@');
     return names[0] || `@${names[1]}`;
   }
 
   private initCommand() {
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "install <pluginName>",
-      alias: "i",
-      description: "install plugin",
+      scope: 'cli',
+      command: 'install <pluginName>',
+      alias: 'i',
+      description: 'install plugin',
       action: async (name: string) => {
         try {
           await this.$$`npm i ${name} --save`;
           const pkgName = this.getNpmPkgName(name);
           globalConf.set(`plugins.${pkgName}`, true);
           this.ctx.log.success(`🎉 Plugin ${pkgName} installed`);
-        } catch (e) {
+        }
+        catch (e) {
           this.ctx.log.error((e as Error).message);
         }
       },
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "uninstall <name>",
-      alias: "un",
-      description: "uninstall plugin",
+      scope: 'cli',
+      command: 'uninstall <name>',
+      alias: 'un',
+      description: 'uninstall plugin',
       action: async (name: string) => {
         try {
           await this.$$`npm un ${name} --save`;
           const pkgName = this.getNpmPkgName(name);
-          const plugins = globalConf.get("plugins") as PluginList;
-          if (!plugins.hasOwnProperty(pkgName)) {
+          const plugins = globalConf.get('plugins') as PluginList;
+          if (!Object.prototype.hasOwnProperty.call(plugins, pkgName)) {
             this.ctx.log.error(`Plugin ${pkgName} is not installed`);
             return;
           }
           delete plugins[pkgName];
-          globalConf.set("plugins", plugins);
+          globalConf.set('plugins', plugins);
           this.ctx.log.success(`🎉 Plugin ${pkgName} uninstalled`);
-        } catch (e) {
+        }
+        catch (e) {
           this.ctx.log.error((e as Error).message);
         }
       },
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "enable <name>",
-      description: "enable plugin",
+      scope: 'cli',
+      command: 'enable <name>',
+      description: 'enable plugin',
       action: (inName: string) => {
         const name = this.getNpmPkgName(inName);
-        const plugins = globalConf.get("plugins") as PluginList;
-        if (!plugins.hasOwnProperty(name)) {
+        const plugins = globalConf.get('plugins') as PluginList;
+        if (!Object.prototype.hasOwnProperty.call(plugins, name)) {
           this.ctx.log.error(`Plugin ${name} is not installed`);
           return;
         }
@@ -95,13 +96,13 @@ export class Plugin {
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "disable <name>",
-      description: "disable plugin",
+      scope: 'cli',
+      command: 'disable <name>',
+      description: 'disable plugin',
       action: (inName: string) => {
         const name = this.getNpmPkgName(inName);
-        const plugins = globalConf.get("plugins") as PluginList;
-        if (!plugins.hasOwnProperty(name)) {
+        const plugins = globalConf.get('plugins') as PluginList;
+        if (!Object.prototype.hasOwnProperty.call(plugins, name)) {
           this.ctx.log.error(`Plugin ${name} is not installed`);
           return;
         }
@@ -111,56 +112,58 @@ export class Plugin {
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "link",
-      description: "link plugin",
+      scope: 'cli',
+      command: 'link',
+      description: 'link plugin',
       options: [
         {
-          flags: "-p, --path <path>",
-          description: "plugin path",
+          flags: '-p, --path <path>',
+          description: 'plugin path',
           defaultValue: this.ctx.meta.paths.cwd,
         },
       ],
       action: async (options: { path: string }) => {
         try {
-          const name = this.ctx.fs.readJSONSync(join(options.path, "package.json")).name;
+          const name = this.ctx.fs.readJSONSync(join(options.path, 'package.json')).name;
           globalConf.set(`plugins.${name}`, options.path);
           this.ctx.log.success(`🎉 Plugin ${name} linked`);
-        } catch (e) {
+        }
+        catch (e) {
           this.ctx.log.error((e as Error).message);
         }
       },
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "unlink",
-      description: "unlink plugin",
+      scope: 'cli',
+      command: 'unlink',
+      description: 'unlink plugin',
       action: async () => {
         try {
-          const name = this.ctx.fs.readJSONSync(join(this.ctx.meta.paths.cwd, "package.json")).name;
-          const plugins = globalConf.get("plugins") as PluginList;
-          if (!plugins.hasOwnProperty(name)) {
+          const name = this.ctx.fs.readJSONSync(join(this.ctx.meta.paths.cwd, 'package.json')).name;
+          const plugins = globalConf.get('plugins') as PluginList;
+          if (!Object.prototype.hasOwnProperty.call(plugins, name)) {
             this.ctx.log.error(`Plugin ${name} is not installed`);
             return;
           }
-          if (typeof plugins[name] === "string") {
+          if (typeof plugins[name] === 'string') {
             delete plugins[name];
-            globalConf.set("plugins", plugins);
+            globalConf.set('plugins', plugins);
             this.ctx.log.success(`🎉 Plugin ${name} unlinked`);
             return;
           }
           this.ctx.log.error(`Plugin ${name} is not linked`);
-        } catch (e) {
+        }
+        catch (e) {
           this.ctx.log.error((e as Error).message);
         }
       },
     });
 
     this.ctx.registerCommand({
-      scope: "cli",
-      command: "updates",
-      description: "check plugin updates",
+      scope: 'cli',
+      command: 'updates',
+      description: 'check plugin updates',
       action: async () => {
         await this.$$`npx taze major -w`;
         await this.$$`npm i`;
@@ -170,23 +173,26 @@ export class Plugin {
   }
 
   private initExternalPlugins() {
-    const pluginMap = (globalConf.get("plugins") || {}) as Record<string, boolean | string>;
-    const plugins = Object.keys(pluginMap).filter((name) => pluginMap[name]);
+    const pluginMap = (globalConf.get('plugins') || {}) as Record<string, boolean | string>;
+    const plugins = Object.keys(pluginMap).filter(name => pluginMap[name]);
     plugins.forEach((name) => {
       try {
         let plugin: CliPlugin;
-        if (typeof pluginMap[name] === "string") {
+        if (typeof pluginMap[name] === 'string')
+        // eslint-disable-next-line ts/no-var-requires, ts/no-require-imports
           plugin = require(pluginMap[name] as string).default as CliPlugin;
-        } else {
-          plugin = require(join(this.pluginDirPath, "node_modules", name)).default as CliPlugin;
-        }
+        else
+          // eslint-disable-next-line ts/no-var-requires, ts/no-require-imports
+          plugin = require(join(this.pluginDirPath, 'node_modules', name)).default as CliPlugin;
+
         if (!plugin.name) {
           this.ctx.log.error(`Plugin ${name} load failed`);
           return;
         }
         this.registerPlugin(plugin);
         this.ctx.log.debug(`Plugin ${name} loaded`);
-      } catch (e) {
+      }
+      catch (e) {
         this.ctx.log.error((e as Error).message);
       }
     });

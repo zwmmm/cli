@@ -1,10 +1,11 @@
-import type * as prompts from "@clack/prompts";
-import type { ChalkInstance } from "chalk";
-import type { Command } from "commander";
-import type { default as Conf, Schema } from "conf";
-import type { Execa$, execa } from "execa";
-import type * as fs from "fs-extra";
-import type { json } from "./../core/utils/json";
+import type * as prompts from '@clack/prompts';
+import type { ChalkInstance } from 'chalk';
+import type { Command } from 'commander';
+import type Conf from 'conf';
+import type { Schema } from 'conf';
+import type { Execa$, execa } from 'execa';
+import type * as fs from 'fs-extra';
+import type { json } from './../core/utils/json';
 
 export interface MetaType {
   paths: {
